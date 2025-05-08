@@ -1,0 +1,39 @@
+// Note $ signifie that what follow is a memory adress
+
+// Exo1
+    // A = 1
+    LOAD#   1           //met la valeur 1 dans le registre ( le registre a une seule case )
+    STORE@  0           //met la valeur du registre dans l'adresse 0
+    // A = A + 10
+    LOAD#   10          // set the register value to 10
+    STORE@  2           // load the value of 10  in the memory adress 2
+    LOAD#   0           // load the value in 0 ( of value 1 )
+    add :               // start a label,  
+        LOAD@   0       // load the value in adress 0
+        INCR            // increment the value
+        STORE@  0       // store it in adress 0
+        LOAD@   2       // load the value in adress 2
+        DECR            // decrement the value in 2
+        JZ  end         // jump if register =< 0 to end
+        STORE@  2       // store the value in the register in adress 2
+        JUMP    add     // redo the loop
+   end :   
+        HALT            // end the programm
+        
+    // A = A + B
+        // A is stored in the adress 0
+        // B is stored in the adress 1
+    
+    LOAD@   1           // load the value in adress 1 ( B )
+    STORE@  2           // add in adress 2 the value of adress 1 ( $2 = B )
+                        // the value of B is sauvegarded in $1 and we use $2 for add
+    JZ end              // if B =< 0 call end, because if B = 0 no change in end value, and if B < 0
+                        // the additon of negative is not supported
+    JUMP add            // call add
+
+// Exo2
+    LOAD@   0       // load $0
+    JZ  valAbsolue  // if $0 =< 0 call valAbsolue
+    STORE@         // store $0 in address equals to his value [ TO DO ]
+    
+    valAbsolue :    
