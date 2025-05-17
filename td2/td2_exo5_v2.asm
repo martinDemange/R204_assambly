@@ -22,50 +22,48 @@
 	
 .text
 main : 	
-	la	$a0,	save					# load save in $a0
-	ori	$a1,	$zero,	1				# set $a1 to 1, k = 1
-	ori	$a2,	$zero,	9				# set $a2 to 9, rang = 9
+	la	$a0,	save				# load save in $a0
+	ori	$a1,	$zero,	1			# set $a1 to 1, k = 1
+	ori	$a2,	$zero,	9			# set $a2 to 9, rang = 9
 	jal recherche
 	# print the value stored in $t1
-	or	$a0,	$zero,	$v0				# put the value of $v0 in $a0
-	ori	$v0,	$zero,	1				# $v0 <- 1
-	syscall								# syscall 1, print $a0 ( integer )
+	or	$a0,	$zero,	$v0			# put the value of $v0 in $a0
+	ori	$v0,	$zero,	1			# $v0 <- 1
+	syscall						# syscall 1, print $a0 ( integer )
 	# end programm
 	end:
-	ori $v0, 	$zero, 	10				# set $v0 <- 10 
-	syscall								# syscall 10, exit		
+	ori $v0, 	$zero, 	10			# set $v0 <- 10 
+	syscall						# syscall 10, exit		
 
 recherche :
-	# 								param of recherche  
+	# param of recherche  
 	#	$a0 :	where the array save is stored
 	#	$a1 : 	the var k, that represent what is searched
 	#	$a2 :	the var rang, that represent the size and a limit for the loop in Recherche
-	#								register used
-	#	$s0 : the index
-	#	$t1	: the index but it is mult by 4 so it can be used 
-	#	$t2 : where the output of slt is stored
-	#	$t3	: where the output of another logical test
+	#register used
+	#	$s0 : the index, and the value of the array when extracted
+	#	$t0 : where the output of the logic test and the data manipulation is stored
 	
 	
-	or	$s0,	$zero,	$zero			# init $t0, the index as 0, $t0 is the index
+	or	$s0,	$zero,	$zero			# init $s0, the index as 0, $s0 is the index
 	array_loop :
 		# condition of the for loop and break of the loop
-		slt	$t2,	$a2,	$s0			# $t2 = i > n,
-		bne	$t2,	$zero,	exit_loop	# if ( i > n ) goto exit_loop
+		slt	$t0,	$a2,	$s0		# $t0 = i > n,
+		bne	$t0,	$zero,	exit_loop	# if ( i > n ) goto exit_loop
 	
 		# reading of the array
-		sll	$t1,	$t0,	2			# mult by four the index for accessing element, $t1 = $t0 * 4
-		add	$t1,	$t1,	$a0			# $t1 became the adress of the new index
-		lw	$t1,	($t1)				# replace by load word the adress by its contents
+		sll	$t0,	$s0,	2		# mult by four the index for accessing element, $t0 = $s0 * 4
+		add	$t0,	$t0,	$a0		# $t0 became the adress of the new index
+		lw	$t0,	0($t0)			# replace by load word the adress by its contents
 		
-		beq	$t1,	$a1,	exit_loop
+		beq	$t0,	$a1,	exit_loop
 		# increment the index by one
-		addi	$t0,	$t0,	1		# $t0 = $t0 + 1
+		addi	$s0,	$s0,	1		# $s0 = $s0 + 1
 		# jum to array_loop for contuning the loop
-		j array_loop					# jum to array_loop	
+		j array_loop				# jum to array_loop	
 	exit_loop :	
 		# made to exit the loop, of type for in this case
-		or	$v0,	$zero,	$s0			# put the index in $v0 // return 1
-		jr 	$ra							# jump to the jum register // return i
+		or	$v0,	$zero,	$s0		# put the index in $v0 // return 1
+		jr 	$ra				# jump to the jum register // return i
 		
 	
